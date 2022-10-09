@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
+import random as rd
 
 class Undirected_Graph:
     def __init__(self, number_of_nodes) -> None:
@@ -50,10 +51,11 @@ class Undirected_Graph:
 
 
     def show_graph(self):
-        self.labels = {x: x for x in range(self.non)}
+        colors = [tuple(rd.random() for _ in range(3)) for _ in range(self.non)]
+        self.labels = {_: _ for _ in range(self.non)}
         adc_matrix = np.matrix(self.adjacency_matrix)
         graph=nx.from_numpy_matrix(adc_matrix, create_using=nx.MultiGraph())
-        nx.draw(graph, with_labels=True, labels=self.labels, connectionstyle='arc3, rad = 2.5')
+        nx.draw(graph, arrows=True, node_color=colors, with_labels=True, labels=self.labels, connectionstyle='arc3, rad = 0.1')
         plt.show()
 
 
