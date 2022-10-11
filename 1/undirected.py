@@ -131,13 +131,14 @@ class Undirected_Graph:
     def vertex_deegre(self):
         while True:
             try:
-                vertex = int(input("Enter the vertex"))
+                vertex = int(input("Enter the vertex\n"))
             except ValueError:
                 print("Must be integer")
 
             if self.validate_vertices(vertex):
                 degree = sum(self.adjacency_matrix[vertex]) #leaving, entering
                 print(f"degree: {degree}")
+                break
             else:
                 print("Incorrect vertices")
 

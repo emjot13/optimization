@@ -24,11 +24,7 @@ class Directed_Graph:
         self.choices()
 
     def validate_vertices(self, *args):
-        for vertex in args:
-            if not 0 <= vertex <= self.non - 1:
-                return False
-        return True
-
+        return all([0 <= _ <= self.non - 1 for _ in args ])
 
     def choices(self):
         while True:
@@ -122,13 +118,14 @@ class Directed_Graph:
     def vertex_deegre(self):
         while True:
             try:
-                vertex = int(input("Enter the vertex"))
+                vertex = int(input("Enter the vertex\n"))
             except ValueError:
                 print("Must be integer")
 
             if self.validate_vertices(vertex):
                 negative, positive = self.get_deegres(vertex) #leaving, entering
                 print(f"negative: {negative}, positive: {positive}")
+                break
             else:
                 print("Incorrect vertices")
 
