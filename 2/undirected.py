@@ -2,12 +2,13 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 import random as rd
+import time
 
 class Undirected_Graph:
     def __init__(self, number_of_nodes, from_file) -> None:
 
         if from_file:
-            self.file = "../2/graph.txt"
+            self.file = "../2/graph2.txt"
             self.adjacency_matrix, self.non = self.read_from_file()
         
         else:
@@ -26,11 +27,12 @@ class Undirected_Graph:
         8: self.odd_even,
         9: self.sort_vertices,
         10: self.c_3_matrix_multiplication,
-        11: self.c_3_naive,
-        12: exit
+        11: self.c_3_combinations,
+        12: self.c_3_loops,
+        13: exit
     }
 
-        self.show_graph()
+        # self.show_graph()
         self.choices()
 
     def validate_vertices(self, *args):
@@ -63,8 +65,9 @@ class Undirected_Graph:
 8. Odd and even
 9. Sorted
 10. C3 matrix
-11. C3 naive
-12. Exit
+11. C3 combinations
+12. C3 loops
+13. Exit
 """)        
             if action in [str(x) for x in range(1, len(self.actions) + 1)]:
                 self.actions[int(action)]()
@@ -72,33 +75,57 @@ class Undirected_Graph:
 
 
     def c_3_matrix_multiplication(self):
+        start = time.time()
         third_power = np.linalg.matrix_power(self.adjacency_matrix, 3)
-        number_of_3 = int(np.trace(third_power) / 6)
+        number_of_3 = np.trace(third_power) // 6
+        end = time.time()
         print(f"There are {number_of_3} triangles in this graph")
+        print(end - start, "seconds")
 
-    def c_3_naive(self):
-        print("here")
+    def c_3_combinations(self):
+        from itertools import combinations
         count = 0
         triangles = []
-        for a in range(self.non):
-            for b in range(self.non):
-                for c in range(self.non):
-                    if not a == b == c:
-                        if all([self.adjacency_matrix[a][b], self.adjacency_matrix[b][c], self.adjacency_matrix[c][a]]):
-                            # triangles.append(set([a, b, c]))
-                            triangles.append(set([a, b, c]))
+        start = time.time()
+        start2 = time.time()
+        all_triplets = tuple(combinations(range(self.non), 3))
+        end2 = time.time()
+        for triplet in all_triplets:
+            all_pairs = tuple(combinations(triplet, 2))
+            if all([self.adjacency_matrix[pair[0]][pair[1]] for pair in all_pairs]):
+                # triangles.append(triplet)
+                count += 1
 
-                            count += 1
-        print(f"There are {count // 6} triangles in this graph")
-        triangles = list(set(frozenset(x) for x in triangles))
-        for triangle in triangles:
-            print(*triangle)
+        end = time.time()
 
 
+        print(f"There are {count} triangles in this graph")
+        print(end - start, "seconds")
+        print(end2 - start2, "seconds")
+
+
+
+
+    def c_3_loops(self):
+            count = 0
+            triangles = []
+            start = time.time()
+            for a in range(self.non):
+                for b in range(a + 1, self.non):
+                    if self.adjacency_matrix[a][b]:
+                        for c in range(b + 1, self.non):
+                            if self.adjacency_matrix[b][c] and self.adjacency_matrix[c][a]:
+                                triangles.append(frozenset((a, b, c)))
+                                count += 1
+            end = time.time()
+            print(f"There are {count} triangles in this graph")
+            print(end - start, "seconds")
+
+            # for triangle in triangles:
+            #     print(*triangle)
 
 
     def show_graph(self):
-        print(self.adjacency_matrix)
         colors = [tuple(rd.random() for _ in range(3)) for _ in range(self.non)]
         self.labels = {_: _ for _ in range(self.non)}
         adc_matrix = np.matrix(self.adjacency_matrix)
