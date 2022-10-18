@@ -8,7 +8,7 @@ class Undirected_Graph:
     def __init__(self, number_of_nodes, from_file) -> None:
 
         if from_file:
-            self.file = "../2/graph2.txt"
+            self.file = "../2/graph.txt"
             self.adjacency_matrix, self.non = self.read_from_file()
         
         else:
@@ -29,7 +29,8 @@ class Undirected_Graph:
         10: self.c_3_matrix_multiplication,
         11: self.c_3_combinations,
         12: self.c_3_loops,
-        13: exit
+        13: self.c_3_loops_matrix_2,
+        14: exit
     }
 
         # self.show_graph()
@@ -67,7 +68,8 @@ class Undirected_Graph:
 10. C3 matrix
 11. C3 combinations
 12. C3 loops
-13. Exit
+13. Matrix v2
+14. Exit
 """)        
             if action in [str(x) for x in range(1, len(self.actions) + 1)]:
                 self.actions[int(action)]()
@@ -87,9 +89,7 @@ class Undirected_Graph:
         count = 0
         triangles = []
         start = time.time()
-        start2 = time.time()
         all_triplets = tuple(combinations(range(self.non), 3))
-        end2 = time.time()
         for triplet in all_triplets:
             all_pairs = tuple(combinations(triplet, 2))
             if all([self.adjacency_matrix[pair[0]][pair[1]] for pair in all_pairs]):
@@ -101,9 +101,20 @@ class Undirected_Graph:
 
         print(f"There are {count} triangles in this graph")
         print(end - start, "seconds")
-        print(end2 - start2, "seconds")
 
 
+    def helper(self):
+        second_power = np.linalg.matrix_power(self.adjacency_matrix, 2)
+        for x in range(self.non):
+            for y in range(self.non):
+                if second_power[x][y] and self.adjacency_matrix[x][y]:
+                    return "There is at least one C3 cycle."
+
+                    
+        return "No C3 cycles detected"
+
+    def c_3_loops_matrix_2(self):
+        print(self.helper())
 
 
     def c_3_loops(self):
