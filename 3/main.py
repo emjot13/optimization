@@ -36,7 +36,7 @@ def dfs_tree(graph, start):
                 break
         else:
             stack.pop()
-    return edges
+    return edges if all(visited) else "Graph is not connected"
 
 
 
